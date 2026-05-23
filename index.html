@@ -1,0 +1,180 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Lifeheart — Start Onboarding</title>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    :root {
+      --brand:   #1a1a2e;
+      --accent:  #e94560;
+      --surface: #ffffff;
+      --muted:   #6b7280;
+      --border:  #e5e7eb;
+      --radius:  8px;
+      --success: #10b981;
+      --danger:  #ef4444;
+    }
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      background: #f3f4f6;
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 24px;
+    }
+    .card {
+      background: var(--surface);
+      border-radius: 12px;
+      box-shadow: 0 4px 24px rgba(0,0,0,0.08);
+      width: 100%;
+      max-width: 480px;
+      padding: 40px;
+    }
+    .logo { font-size: 11px; font-weight: 700; letter-spacing: 0.12em; text-transform: uppercase; color: var(--muted); margin-bottom: 6px; }
+    h1 { font-size: 22px; font-weight: 700; color: var(--brand); margin-bottom: 4px; }
+    .subtitle { font-size: 14px; color: var(--muted); margin-bottom: 32px; }
+    .field { margin-bottom: 20px; }
+    label { display: block; font-size: 13px; font-weight: 600; color: var(--brand); margin-bottom: 6px; }
+    input[type="text"], input[type="email"], select {
+      width: 100%; padding: 10px 14px; border: 1.5px solid var(--border);
+      border-radius: var(--radius); font-size: 14px; color: var(--brand);
+      background: var(--surface); transition: border-color 0.15s; appearance: none;
+    }
+    input[type="text"]:focus, input[type="email"]:focus, select:focus { outline: none; border-color: var(--accent); }
+    .select-wrap { position: relative; }
+    .select-wrap::after { content: "▾"; position: absolute; right: 14px; top: 50%; transform: translateY(-50%); pointer-events: none; color: var(--muted); font-size: 14px; }
+    .toggle-row { display: flex; align-items: center; justify-content: space-between; padding: 12px 14px; border: 1.5px solid var(--border); border-radius: var(--radius); cursor: pointer; user-select: none; }
+    .toggle-row:hover { border-color: #d1d5db; }
+    .toggle-label-group { display: flex; flex-direction: column; gap: 2px; }
+    .toggle-label { font-size: 14px; color: var(--brand); font-weight: 500; }
+    .toggle-hint { font-size: 12px; color: var(--muted); }
+    .toggle-switch { width: 40px; height: 22px; background: var(--border); border-radius: 99px; position: relative; transition: background 0.2s; flex-shrink: 0; }
+    .toggle-switch::after { content: ""; position: absolute; width: 16px; height: 16px; background: white; border-radius: 50%; top: 3px; left: 3px; transition: transform 0.2s; box-shadow: 0 1px 3px rgba(0,0,0,0.2); }
+    .toggle-row.is-on .toggle-switch { background: var(--accent); }
+    .toggle-row.is-on .toggle-switch::after { transform: translateX(18px); }
+    input[type="checkbox"] { display: none; }
+    .divider { border: none; border-top: 1px solid var(--border); margin: 24px 0; }
+    .test-row { display: flex; align-items: center; justify-content: space-between; padding: 10px 14px; background: #fef9c3; border: 1.5px solid #fde047; border-radius: var(--radius); cursor: pointer; user-select: none; margin-bottom: 20px; }
+    .test-label { font-size: 13px; font-weight: 600; color: #92400e; }
+    .test-hint  { font-size: 11px; color: #a16207; }
+    .test-switch { width: 36px; height: 20px; background: #fde047; border-radius: 99px; position: relative; transition: background 0.2s; flex-shrink: 0; }
+    .test-switch::after { content: ""; position: absolute; width: 14px; height: 14px; background: white; border-radius: 50%; top: 3px; left: 3px; transition: transform 0.2s; box-shadow: 0 1px 3px rgba(0,0,0,0.2); }
+    .test-row.is-on .test-switch { background: #f59e0b; }
+    .test-row.is-on .test-switch::after { transform: translateX(16px); }
+    button[type="submit"] { width: 100%; padding: 13px; background: var(--accent); color: white; font-size: 15px; font-weight: 700; border: none; border-radius: var(--radius); cursor: pointer; transition: opacity 0.15s, transform 0.1s; letter-spacing: 0.01em; }
+    button[type="submit"]:hover  { opacity: 0.9; }
+    button[type="submit"]:active { transform: scale(0.99); }
+    button[type="submit"]:disabled { opacity: 0.5; cursor: not-allowed; }
+    .status { display: none; padding: 12px 16px; border-radius: var(--radius); font-size: 14px; font-weight: 500; margin-top: 16px; line-height: 1.5; }
+    .status.success { display: block; background: #ecfdf5; color: #065f46; border: 1.5px solid #6ee7b7; }
+    .status.error { display: block; background: #fef2f2; color: #991b1b; border: 1.5px solid #fca5a5; }
+  </style>
+</head>
+<body>
+<div class="card">
+  <div class="logo">Lifeheart</div>
+  <h1>Start Onboarding</h1>
+  <p class="subtitle">Triggers folder creation, signing envelopes, and welcome email.</p>
+  <form id="onboarding-form">
+    <input type="checkbox" id="test_mode" checked />
+    <label>
+      <div class="test-row">
+        <div>
+          <div class="test-label">⚠ Test Mode</div>
+          <div class="test-hint">Routes to _test/ folder &amp; jdeaneh@gmail.com</div>
+        </div>
+        <div class="test-switch"></div>
+      </div>
+    </label>
+    <div class="field">
+      <label for="name">Full Name</label>
+      <input type="text" id="name" name="name" placeholder="Jane Smith" required />
+    </div>
+    <div class="field">
+      <label for="email">Email Address</label>
+      <input type="email" id="email" name="email" placeholder="jane@example.com" required />
+    </div>
+    <div class="field">
+      <label for="employment_bundle">Employment Bundle</label>
+      <div class="select-wrap">
+        <select id="employment_bundle" name="employment_bundle" required>
+          <option value="" disabled selected>Select classification…</option>
+          <optgroup label="Casual">
+            <option value="Casual 2.1">Casual 2.1</option>
+            <option value="Casual 2.2">Casual 2.2</option>
+            <option value="Casual 2.3">Casual 2.3</option>
+          </optgroup>
+          <optgroup label="Permanent">
+            <option value="Permanent 2.1">Permanent 2.1</option>
+            <option value="Permanent 2.2">Permanent 2.2</option>
+            <option value="Permanent 2.3">Permanent 2.3</option>
+            <option value="Permanent 3.1">Permanent 3.1</option>
+          </optgroup>
+        </select>
+      </div>
+    </div>
+    <div class="field">
+      <input type="checkbox" id="ifa" name="ifa" />
+      <label>
+        <div class="toggle-row">
+          <div class="toggle-label-group">
+            <span class="toggle-label">IFA Required</span>
+            <span class="toggle-hint">Sends Individual Flexibility Agreement envelope</span>
+          </div>
+          <div class="toggle-switch"></div>
+        </div>
+      </label>
+    </div>
+    <hr class="divider" />
+    <button type="submit" id="submit-btn">Start Onboarding →</button>
+    <div class="status" id="status-msg"></div>
+  </form>
+</div>
+<script>
+  const WEBHOOK_URL = "https://hook.eu1.make.com/2joj941tnwzgb1rll5hgrhmj6dko58s6";
+  const nameInput  = document.getElementById("name");
+  const emailInput = document.getElementById("email");
+  const TEST_NAME  = "Test User";
+  const TEST_EMAIL = "test@lifeheart.com.au";
+  function syncTestFields(isOn) {
+    if (isOn) { nameInput.value = TEST_NAME; emailInput.value = TEST_EMAIL; nameInput.style.opacity = "0.45"; emailInput.style.opacity = "0.45"; }
+    else { nameInput.value = ""; emailInput.value = ""; nameInput.style.opacity = "1"; emailInput.style.opacity = "1"; }
+  }
+  function initToggle(checkboxId, rowClass, onChange) {
+    const cb = document.getElementById(checkboxId);
+    const row = document.querySelector(rowClass);
+    if (cb.checked) row.classList.add("is-on");
+    if (onChange) onChange(cb.checked);
+    row.addEventListener("click", () => { cb.checked = !cb.checked; row.classList.toggle("is-on", cb.checked); if (onChange) onChange(cb.checked); });
+  }
+  initToggle("test_mode", ".test-row", syncTestFields);
+  initToggle("ifa", ".toggle-row");
+  const form = document.getElementById("onboarding-form");
+  const btn = document.getElementById("submit-btn");
+  const statusEl = document.getElementById("status-msg");
+  form.addEventListener("submit", async (e) => {
+    e.preventDefault();
+    const payload = { name: document.getElementById("name").value.trim(), email: document.getElementById("email").value.trim(), employment_bundle: document.getElementById("employment_bundle").value, ifa: document.getElementById("ifa").checked, test_mode: document.getElementById("test_mode").checked };
+    btn.disabled = true; btn.textContent = "Sending…"; statusEl.className = "status"; statusEl.textContent = "";
+    try {
+      const res = await fetch(WEBHOOK_URL, { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify(payload) });
+      if (res.ok) {
+        statusEl.className = "status success";
+        statusEl.textContent = payload.test_mode ? "✓ Test run fired for " + payload.name + ". Check _test/ folder and jdeaneh@gmail.com." : "✓ Onboarding started for " + payload.name + ". Folder, envelopes, and welcome email are on their way.";
+        form.reset();
+        document.getElementById("test_mode").checked = true;
+        document.querySelector(".test-row").classList.add("is-on");
+        document.querySelector(".toggle-row").classList.remove("is-on");
+        syncTestFields(true);
+      } else { throw new Error("Webhook returned " + res.status); }
+    } catch (err) {
+      statusEl.className = "status error";
+      statusEl.textContent = "✗ Something went wrong: " + err.message + ". Check Make.com execution log.";
+    } finally { btn.disabled = false; btn.textContent = "Start Onboarding →"; }
+  });
+</script>
+</body>
+</html>
